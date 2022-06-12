@@ -1,40 +1,19 @@
-import path from 'path';
 import fg from 'fast-glob';
 import { Application } from 'express';
-import { RoutesMeta, Route } from './types';
 import { generateRouter } from './route-generator';
+import { gatherRoutes } from './gather-routes';
 
-const ext = path.extname(__filename);
-
-export interface RouteFile {
-  routes: Route[];
-  meta?: RoutesMeta;
+export interface OrionOptions {
+  ext?: 'js' | 'ts';
+  suffix?: string;
 }
 
-async function gatherRoutes() {
-  const paths = await fg([`./**/*.route${ext}`], { absolute: true });
-  const pathsWithErrors: string[] = [];
-  const routes = paths
-    .map((p) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const routeMap: RouteFile = require(p) as RouteFile;
+export async function orion(app: Application, opts: OrionOptions) {
+  const suffix = opts.suffix || 'route';
+  const ext = opts.ext || 'ts';
 
-      if (!routeMap) {
-        pathsWithErrors.push(p);
-        return [];
-      }
-
-      return routeMap.routes;
-    })
-    .reduce((a, c) => [...a, ...c], []);
-
-  console.log('routes -> ', routes);
-
-  return routes;
-}
-
-export async function orion(app: Application) {
-  const routes = await gatherRoutes();
+  const paths = await fg([`./**/*.${suffix}.${ext}`], { absolute: true });
+  const routes = gatherRoutes(paths);
   const router = generateRouter(routes);
 
   app.use(router);

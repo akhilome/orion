@@ -16,5 +16,10 @@ export interface Route<P = unknown> {
 
 export interface RoutesMeta {
   base?: string;
-  middlewares?: RequestHandler[];
+  middlewares?: RequestHandler[]; // TODO: support middlewares
+}
+
+export interface RouteFile {
+  routes: Route[];
+  meta?: RoutesMeta;
 }
