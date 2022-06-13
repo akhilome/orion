@@ -16,7 +16,7 @@ export interface OrionOptions {
     options?: ValidationOptions | AsyncValidationOptions;
   };
   logging?: {
-    supress?: boolean;
+    enable?: boolean;
   };
 }
 
@@ -27,7 +27,7 @@ export const defaultOptions = {
     options: { abortEarly: false, stripUnknown: true },
   },
   logging: {
-    supress: false,
+    enable: true,
   },
 } as const;
 

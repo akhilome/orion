@@ -7,7 +7,7 @@ const pad = (str: string) => ` ${str} `;
 const { log } = console;
 
 export function routeLogger(routes: Route[], opts: OrionOptions['logging'] = {}) {
-  if (opts.supress) return;
+  if (!opts.enable) return;
 
   log(`${EOL}✨ orion mapped routes ${EOL}`);
   routes.forEach(logRoute);
