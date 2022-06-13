@@ -735,6 +735,11 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/caller@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/caller/-/caller-1.0.0.tgz#21044c8254e95e57c86a2079bd99430d5f892c62"
+  integrity sha512-zbyHsdYFn5gCQFn+fF7Ad9En1fJdj3o0YP7DPTD9J3at4M9auNfoLrVYH4hFdLfFDhnB0kTZw3RAKp4iD516uw==
+
 "@types/connect@*":
   version "3.4.35"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.35.tgz#5fcf6ae445e4021d1fc2219a4873cc73a3bb2ad1"
@@ -1170,6 +1175,11 @@ call-bind@^1.0.0:
     function-bind "^1.1.1"
     get-intrinsic "^1.0.2"
 
+caller@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/caller/-/caller-1.1.0.tgz#46228555cfecb57d82bcd173b493f87cee9680fe"
+  integrity sha512-n+21IZC3j06YpCWaxmUy5AnVqhmCIM2bQtqQyy00HJlmStRt6kwDX5F9Z97pqwAB+G/tgSz6q/kUBbNyQzIubw==
+
 callsites@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
@@ -1199,7 +1209,7 @@ chalk@^2.0.0:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chalk@^4.0.0:
+chalk@^4.0.0, chalk@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==

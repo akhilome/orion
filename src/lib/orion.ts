@@ -1,19 +1,33 @@
-import fg from 'fast-glob';
+import caller from 'caller';
 import { Application } from 'express';
-import { generateRouter } from './route-generator';
-import { gatherRoutes } from './gather-routes';
+import fg from 'fast-glob';
+import { AsyncValidationOptions, ValidationOptions } from 'joi';
+import path from 'path';
 
+import { gatherRoutes } from './gather-routes';
+import { generateRouter } from './route-generator';
+import { routeLogger } from './route-logger';
+
+const DEFAULT_ORION_SUFFIX = 'route';
 export interface OrionOptions {
-  ext?: 'js' | 'ts';
+  ext?: 'js' | 'mjs' | 'ts';
   suffix?: string;
+  joiValidationOptions?: ValidationOptions | AsyncValidationOptions;
+  logging?: {
+    supress?: boolean;
+  };
 }
 
-export async function orion(app: Application, opts: OrionOptions) {
-  const suffix = opts.suffix || 'route';
-  const ext = opts.ext || 'ts';
+export function orion(app: Application, opts: OrionOptions = {}) {
+  const callerExt = path.extname(caller()).split('.')[1];
+  const suffix = opts.suffix || DEFAULT_ORION_SUFFIX;
+  const ext = opts.ext || callerExt;
 
-  const paths = await fg([`./**/*.${suffix}.${ext}`], { absolute: true });
+  const paths = fg.sync([`./**/*.${suffix}.${ext}`], { absolute: true });
   const routes = gatherRoutes(paths);
+
+  routeLogger(routes, opts.logging);
+
   const router = generateRouter(routes);
 
   app.use(router);

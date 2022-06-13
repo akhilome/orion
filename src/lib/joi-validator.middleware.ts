@@ -1,12 +1,21 @@
 import { RequestHandler } from 'express';
-import { ValidationError, AsyncValidationOptions, ValidationErrorItem } from 'joi';
+import {
+  ValidationError,
+  AsyncValidationOptions,
+  ValidationErrorItem,
+  ValidationOptions,
+} from 'joi';
 import { Route } from './types';
 import { ErrorResponseObject } from './http';
 
 type ValidatorParam = 'params' | 'query' | 'body';
-const joiSpecOptions: AsyncValidationOptions = { abortEarly: false, stripUnknown: true };
+type SpecOptionsArg = ValidationOptions | AsyncValidationOptions;
+const defaultSpecOptions = { abortEarly: false, stripUnknown: true };
 
-export const joiValidatorMW = (route: Route): RequestHandler =>
+export const joiValidatorMW = (
+  route: Route,
+  specOptions: SpecOptionsArg = defaultSpecOptions,
+): RequestHandler =>
   async function (req, res, next) {
     const { validator } = route;
     if (!validator || validator.skip) return next();
@@ -27,7 +36,7 @@ export const joiValidatorMW = (route: Route): RequestHandler =>
     for (const param of doValidation) {
       try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        req[param] = await validator[param]?.validateAsync(req[param], joiSpecOptions);
+        req[param] = await validator[param]?.validateAsync(req[param], specOptions);
       } catch (error) {
         const errors = [];
 

@@ -3,7 +3,7 @@ import { ObjectSchema } from 'joi';
 
 export interface Route<P = unknown> {
   path: string;
-  method: 'get' | 'post' | 'patch' | 'put' | 'all';
+  method: 'get' | 'post' | 'patch' | 'put' | 'delete' | 'all';
   handler: RequestHandler<P>;
   validator?: {
     body?: ObjectSchema;
