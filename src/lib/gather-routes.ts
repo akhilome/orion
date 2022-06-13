@@ -7,7 +7,7 @@ export function gatherRoutes(paths: string[]) {
     .map((p) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const routeMap: RouteFile = require(p) as RouteFile;
-      if (!routeMap) {
+      if (!routeMap || !routeMap.routes) {
         pathsWithErrors.push(p);
         return [];
       }
