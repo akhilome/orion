@@ -1,0 +1,103 @@
+name: publish package
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  prerelease:
+    if: startsWith(github.event.head_commit.message, 'prerelease:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: setup git config
+        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
+
+      - name: Install np
+        run: yarn global add @akhilome/np@latest
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create & publish new release
+        run: np prerelease --tag next --no-collab-check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  patch:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, 'patch:')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: setup git config
+        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
+
+      - name: Install np
+        run: yarn global add @akhilome/np@latest
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create & publish new release
+        run: np patch --no-collab-check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  minor:
+    if: startsWith(github.event.head_commit.message, 'minor:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: setup git config
+        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
+
+      - name: Install np
+        run: yarn global add @akhilome/np@latest
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create & publish new release
+        run: np minor --no-collab-check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  major:
+    if: startsWith(github.event.head_commit.message, 'major:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: setup git config
+        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
+
+      - name: Install np
+        run: yarn global add @akhilome/np@latest
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create & publish new release
+        run: np major --no-collab-check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

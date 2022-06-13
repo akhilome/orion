@@ -1,0 +1,1 @@
+extends: "@akhilome/eslint-config/ts"
