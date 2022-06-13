@@ -1,28 +1,27 @@
 import { Router } from 'express';
 import { Route } from './types';
 import { joiValidatorMW } from './joi-validator.middleware';
-import { OrionOptions } from './orion';
+import { defaultOptions, OrionOptions } from './orion';
 
 interface GenerateRouterOptions {
-  joiSpecOptions?: OrionOptions['joiValidationOptions'];
+  validation?: OrionOptions['validation'];
 }
 
-export function generateRouter(routes: Route[], opts: GenerateRouterOptions = {}): Router {
+export function generateRouter(routes: Route[], opts: GenerateRouterOptions): Router {
   const router = Router();
-  routes.forEach((route) => {
+  const validation = { ...defaultOptions.validation, ...opts.validation };
+  routes.forEach((r) => {
     // ensure to prefix paths with forward slash just incase
-    if (!route.path.startsWith('/')) route.path = `/${route.path}`;
+    if (!r.path.startsWith('/')) r.path = `/${r.path}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const validator = joiValidatorMW(route, opts.joiSpecOptions);
-
-    if (route.middlewares && route.middlewares.length) {
-      route.middlewares = [validator, ...route.middlewares];
+    if (validation.enable) {
+      const validator = joiValidatorMW(r, validation.options);
+      r.middlewares = r.middlewares?.length ? [validator, ...r.middlewares] : [validator];
     } else {
-      route.middlewares = [validator];
+      r.middlewares = r.middlewares?.length ? r.middlewares : [];
     }
 
-    router[route.method](route.path, ...route.middlewares, route.handler);
+    router[r.method](r.path, ...r.middlewares, r.handler);
   });
 
   return router;

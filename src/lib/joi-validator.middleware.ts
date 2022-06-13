@@ -10,12 +10,8 @@ import { ErrorResponseObject } from './http';
 
 type ValidatorParam = 'params' | 'query' | 'body';
 type SpecOptionsArg = ValidationOptions | AsyncValidationOptions;
-const defaultSpecOptions = { abortEarly: false, stripUnknown: true };
 
-export const joiValidatorMW = (
-  route: Route,
-  specOptions: SpecOptionsArg = defaultSpecOptions,
-): RequestHandler =>
+export const joiValidatorMW = (route: Route, specOptions: SpecOptionsArg): RequestHandler =>
   async function (req, res, next) {
     const { validator } = route;
     if (!validator || validator.skip) return next();

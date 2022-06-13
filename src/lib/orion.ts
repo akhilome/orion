@@ -8,19 +8,33 @@ import { gatherRoutes } from './gather-routes';
 import { generateRouter } from './route-generator';
 import { routeLogger } from './route-logger';
 
-const DEFAULT_ORION_SUFFIX = 'route';
 export interface OrionOptions {
   ext?: 'js' | 'mjs' | 'ts';
   suffix?: string;
-  joiValidationOptions?: ValidationOptions | AsyncValidationOptions;
+  validation?: {
+    enable?: boolean;
+    options?: ValidationOptions | AsyncValidationOptions;
+  };
   logging?: {
     supress?: boolean;
   };
 }
 
-export function orion(app: Application, opts: OrionOptions = {}) {
+export const defaultOptions = {
+  suffix: 'route',
+  validation: {
+    enable: true,
+    options: { abortEarly: false, stripUnknown: true },
+  },
+  logging: {
+    supress: false,
+  },
+} as const;
+
+export function orion(app: Application, opts: OrionOptions = defaultOptions) {
+  opts = { ...defaultOptions, ...opts };
   const callerExt = path.extname(caller()).split('.')[1];
-  const suffix = opts.suffix || DEFAULT_ORION_SUFFIX;
+  const suffix = opts.suffix || defaultOptions.suffix;
   const ext = opts.ext || callerExt;
 
   const paths = fg.sync([`./**/*.${suffix}.${ext}`], { absolute: true });
@@ -28,7 +42,7 @@ export function orion(app: Application, opts: OrionOptions = {}) {
 
   routeLogger(routes, opts.logging);
 
-  const router = generateRouter(routes);
+  const router = generateRouter(routes, opts);
 
   app.use(router);
 
