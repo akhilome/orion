@@ -34,14 +34,19 @@ export const defaultOptions = {
 
 export function orion(app: Application, opts: OrionOptions = defaultOptions) {
   opts = { ...defaultOptions, ...opts };
-  const callerExt = path.extname(caller()).split('.')[1];
+  const callSite = caller();
+  const callerExt = path.extname(callSite).split('.')[1];
   const suffix = opts.suffix || defaultOptions.suffix;
   const ext = opts.ext || callerExt;
 
   // ensure required dependencies are installed
   validatePeerDeps(opts);
 
-  const paths = fg.sync([`./**/*.${suffix}.${ext}`], { absolute: true });
+  const paths = fg.sync([`./**/*.${suffix}.${ext}`], {
+    absolute: true,
+    cwd: path.dirname(callSite),
+  });
+
   const routes = gatherRoutes(paths);
 
   routeLogger(routes, opts.logging);
