@@ -7,6 +7,7 @@ import path from 'path';
 import { gatherRoutes } from './gather-routes';
 import { generateRouter } from './route-generator';
 import { routeLogger } from './route-logger';
+import { validatePeerDeps } from './utils';
 
 export interface OrionOptions {
   ext?: 'js' | 'mjs' | 'ts';
@@ -36,6 +37,9 @@ export function orion(app: Application, opts: OrionOptions = defaultOptions) {
   const callerExt = path.extname(caller()).split('.')[1];
   const suffix = opts.suffix || defaultOptions.suffix;
   const ext = opts.ext || callerExt;
+
+  // ensure required dependencies are installed
+  validatePeerDeps(opts);
 
   const paths = fg.sync([`./**/*.${suffix}.${ext}`], { absolute: true });
   const routes = gatherRoutes(paths);
