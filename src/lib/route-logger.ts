@@ -15,12 +15,12 @@ export function routeLogger(routes: Route[], opts: OrionOptions['logging'] = {})
 
 function logRoute(route: Route): void {
   const pathColorMap = {
-    get: chalk.bgGreen,
-    post: chalk.bgBlue,
-    put: chalk.bgMagenta,
-    patch: chalk.bgYellow,
-    delete: chalk.bgRed,
-    all: chalk.bgGray,
+    GET: chalk.bgGreen,
+    POST: chalk.bgBlue,
+    PUT: chalk.bgMagenta,
+    PATCH: chalk.bgYellow,
+    DELETE: chalk.bgRed,
+    ALL: chalk.bgGray,
   };
   const method = route.method;
   const prettyMethod = pad(method.toUpperCase());

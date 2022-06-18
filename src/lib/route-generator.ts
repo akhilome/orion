@@ -11,9 +11,6 @@ export function generateRouter(routes: Route[], opts: GenerateRouterOptions): Ro
   const router = Router();
   const validation = { ...defaultOptions.validation, ...opts.validation };
   routes.forEach((r) => {
-    // ensure to prefix paths with forward slash just incase
-    if (!r.path.startsWith('/')) r.path = `/${r.path}`;
-
     if (validation.enable) {
       const validator = joiValidatorMW(r, validation.options);
       r.middlewares = r.middlewares?.length ? [validator, ...r.middlewares] : [validator];
@@ -21,7 +18,8 @@ export function generateRouter(routes: Route[], opts: GenerateRouterOptions): Ro
       r.middlewares = r.middlewares?.length ? r.middlewares : [];
     }
 
-    router[r.method](r.path, ...r.middlewares, r.handler);
+    const method = r.method.toLowerCase() as Lowercase<typeof r.method>;
+    router[method](r.path, ...r.middlewares, r.handler);
   });
 
   return router;

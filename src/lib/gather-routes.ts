@@ -14,7 +14,8 @@ export function gatherRoutes(paths: string[]) {
 
       return attachRouteMeta(routeMap.routes, routeMap.meta);
     })
-    .reduce((a, c) => [...a, ...c], []);
+    .reduce((a, c) => [...a, ...c], [])
+    .map((r) => ({ ...r, path: normalizePath(r.path) }));
 
   return routes;
 }
@@ -26,7 +27,7 @@ function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) 
   if (meta.base) {
     const basePath = meta.base;
     routes.forEach((r) => {
-      r.path = removeDoubleSlashes(`/${basePath}/${r.path}`);
+      r.path = removeDuplicateSlashes(`/${basePath}/${r.path}`);
     });
   }
 
@@ -43,6 +44,20 @@ function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) 
   return routes;
 }
 
-function removeDoubleSlashes(path: string) {
+function removeDuplicateSlashes(path: string) {
   return path.replace(/\/\/+/gi, '/');
+}
+
+function normalizePath(path: string) {
+  let normalizedPath: string = path;
+
+  if (!normalizedPath) {
+    normalizedPath = '/';
+  }
+
+  if (!normalizedPath.startsWith('/')) {
+    normalizedPath = `/${path}`;
+  }
+
+  return removeDuplicateSlashes(normalizedPath);
 }
