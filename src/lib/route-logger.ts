@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { EOL } from 'os';
-import { OrionOptions } from './orion';
-import { Route } from './types';
+import { OrionOptions, Route } from './types';
 
 const pad = (str: string) => ` ${str} `;
 const { log } = console;

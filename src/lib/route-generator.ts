@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { Route } from './types';
+import { OrionOptions, Route } from './types';
 import { joiValidatorMW } from './joi-validator.middleware';
-import { defaultOptions, OrionOptions } from './orion';
+import { defaultOptions } from './utils';
 
 interface GenerateRouterOptions {
   validation?: OrionOptions['validation'];

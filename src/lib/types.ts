@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { ObjectSchema } from 'joi';
+import { AsyncValidationOptions, ObjectSchema, ValidationOptions } from 'joi';
 
 export interface Route<P = unknown> {
   path: string;
@@ -16,10 +16,22 @@ export interface Route<P = unknown> {
 
 export interface RoutesMeta {
   base?: string;
-  middlewares?: RequestHandler[]; // TODO: support middlewares
+  middlewares?: RequestHandler[];
 }
 
 export interface RouteFile {
   routes: Route[];
   meta?: RoutesMeta;
+}
+
+export interface OrionOptions {
+  ext?: 'js' | 'mjs' | 'ts';
+  suffix?: string;
+  validation?: {
+    enable?: boolean;
+    options?: ValidationOptions | AsyncValidationOptions;
+  };
+  logging?: {
+    enable?: boolean;
+  };
 }

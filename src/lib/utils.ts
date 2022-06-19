@@ -1,7 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import { PackageJson } from 'type-fest';
-import { OrionOptions } from './orion';
+import { OrionOptions } from './types';
+
+export const defaultOptions = {
+  suffix: 'route',
+  validation: {
+    enable: true,
+    options: { abortEarly: false, stripUnknown: true },
+  },
+  logging: {
+    enable: true,
+  },
+} as const;
 
 export function validatePeerDeps(options: OrionOptions): void {
   const { error: logError } = console;
