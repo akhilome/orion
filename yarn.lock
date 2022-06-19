@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@akhilome/common@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@akhilome/common/-/common-0.0.1.tgz#4b38c008adb6c95924dfe627c734bb01d321a976"
+  integrity sha512-U68AkqFlAhV43iF+59p9CJ8WSPSM9dOpcyN/PsDXht+lpL1Qb4jbqRfPIySU1Kd++vQ5WOxothmqTcC6UcPveA==
+
 "@akhilome/eslint-config@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@akhilome/eslint-config/-/eslint-config-1.0.2.tgz#11cd7c89a0c4b69bfbf71999ca51004e3bc7f028"

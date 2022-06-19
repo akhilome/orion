@@ -1,3 +1,4 @@
+import { ErrorResponseObject } from '@akhilome/common';
 import { RequestHandler } from 'express';
 import {
   ValidationError,
@@ -6,7 +7,6 @@ import {
   ValidationOptions,
 } from 'joi';
 import { Route } from './types';
-import { ErrorResponseObject } from './http';
 
 type ValidatorParam = 'params' | 'query' | 'body';
 type SpecOptionsArg = ValidationOptions | AsyncValidationOptions;
