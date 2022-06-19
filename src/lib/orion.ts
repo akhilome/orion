@@ -36,7 +36,7 @@ export function orion(app: Application, opts: OrionOptions = defaultOptions) {
   opts = { ...defaultOptions, ...opts };
   const callSite = caller();
   const callerExt = path.extname(callSite).split('.')[1];
-  const suffix = opts.suffix || defaultOptions.suffix;
+  const suffix = opts.suffix as string;
   const ext = opts.ext || callerExt;
 
   // ensure required dependencies are installed
