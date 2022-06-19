@@ -1,9 +1,10 @@
 import { RequestHandler } from 'express';
 import { AsyncValidationOptions, ObjectSchema, ValidationOptions } from 'joi';
+import { HttpMethod } from './utils';
 
 export interface Route<P = unknown> {
   path: string;
-  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'ALL';
+  method: Uppercase<HttpMethod>;
   handler: RequestHandler<P>;
   validator?: {
     body?: ObjectSchema;

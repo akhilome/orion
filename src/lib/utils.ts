@@ -36,3 +36,22 @@ export function validatePeerDeps(options: OrionOptions): void {
     throw new Error(`[orion]: missing required dependencies - ${missingDeps.join(', ')}`);
   }
 }
+
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PATCH = 'PATCH',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  HEAD = 'HEAD',
+  CONNECT = 'CONNECT',
+  OPTIONS = 'OPTIONS',
+  TRACE = 'TRACE',
+  ALL = 'ALL',
+}
+
+export class InvalidRouteError extends Error {
+  constructor(message: string, public path = 'N/A', public method = 'N/A') {
+    super(message);
+  }
+}

@@ -58,6 +58,14 @@ describe('mapped paths', () => {
     expect(body).toBeDefined();
     expect(body.message).toEqual('first path');
   });
+
+  it('should skip paths with incorrect schema', async () => {
+    const app = orion(bareApp, { ...defaultOptions });
+
+    const res = await request(app).get('/lol-route');
+
+    expect(res.statusCode).toEqual(404);
+  });
 });
 
 describe('middlewares', () => {
