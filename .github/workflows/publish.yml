@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build distributable
+        run: yarn build
+
       - name: Create & publish new release
         run: np prerelease --tag next --no-collab-check
         env:
@@ -48,6 +51,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Build distributable
+        run: yarn build
 
       - name: Create & publish new release
         run: np patch --no-collab-check
@@ -73,6 +79,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build distributable
+        run: yarn build
+
       - name: Create & publish new release
         run: np minor --no-collab-check
         env:
@@ -96,6 +105,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Build distributable
+        run: yarn build
 
       - name: Create & publish new release
         run: np major --no-collab-check
