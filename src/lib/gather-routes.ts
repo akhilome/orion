@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 import { Route, RouteFile } from './types';
 import { HttpMethod, InvalidRouteError } from './utils';
 
