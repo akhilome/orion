@@ -5,10 +5,15 @@ import { OrionOptions, Route } from './types';
 const pad = (str: string) => ` ${str} `;
 const { log } = console;
 
-export function routeLogger(routes: Route[], opts: OrionOptions['logging'] = {}) {
+type RouteLoggerOptions = {
+  suffix: string;
+  ext: string;
+} & OrionOptions['logging'];
+
+export function routeLogger(routes: Route[], opts: RouteLoggerOptions) {
   if (!opts.enable) return;
 
-  log(`${EOL}✨ orion mapped routes ${EOL}`);
+  log(`${EOL}✨ [*.${opts.suffix}.${opts.ext}] ::: mapped routes ${EOL}`);
   routes.forEach(logRoute);
 }
 
