@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash.clonedeep';
 import { Route, RouteFile } from './types';
 import { HttpMethod, InvalidRouteError } from './utils';
 
@@ -33,18 +34,20 @@ export function gatherRoutes(paths: string[]) {
 }
 
 function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) {
-  if (!meta) return routes;
+  const _routes = cloneDeep(routes);
+
+  if (!meta) return _routes;
   const middlewares = meta.middlewares;
 
   if (meta.base) {
     const basePath = meta.base;
-    routes.forEach((r) => {
+    _routes.forEach((r) => {
       r.path = removeDuplicateSlashes(`/${basePath}/${r.path}`);
     });
   }
 
   if (middlewares?.length) {
-    routes.forEach((r) => {
+    _routes.forEach((r) => {
       if (r.middlewares) {
         r.middlewares = [...middlewares, ...r.middlewares];
       } else {
@@ -53,7 +56,7 @@ function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) 
     });
   }
 
-  return routes;
+  return _routes;
 }
 
 function removeDuplicateSlashes(path: string) {

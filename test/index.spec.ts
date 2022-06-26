@@ -2,9 +2,9 @@ import express, { Application } from 'express';
 import request from 'supertest';
 import { orion } from '../src';
 
-let bareApp: Application;
-beforeAll(() => {
-  bareApp = express();
+let app: Application;
+beforeEach(() => {
+  app = express();
 });
 
 const defaultOptions = { validation: { enable: false }, logging: { enable: false } };
@@ -12,7 +12,7 @@ const defaultOptions = { validation: { enable: false }, logging: { enable: false
 describe('config', () => {
   it('should throw when validation enabled but no joi dep.', () => {
     try {
-      orion(bareApp);
+      orion();
     } catch (e) {
       const error = e as Error;
       expect(error).toBeDefined();
@@ -22,7 +22,7 @@ describe('config', () => {
 
   it('should not throw when no validation enabled and no joi dep.', () => {
     try {
-      orion(bareApp, { ...defaultOptions });
+      app.use(orion({ ...defaultOptions }));
     } catch (e) {
       const error = e as Error;
       expect(error).toBeUndefined();
@@ -30,7 +30,7 @@ describe('config', () => {
   });
 
   it('should look for different suffix when supplied', async () => {
-    const app = orion(bareApp, { ...defaultOptions, suffix: 'juls' });
+    app.use(orion({ ...defaultOptions, suffix: 'juls' }));
     const res = await request(app).get('/juls-1');
     const body = res.body as Record<string, unknown>;
 
@@ -41,16 +41,16 @@ describe('config', () => {
   it('should log to console when logging enabled', () => {
     const { Console } = console;
     const spy = jest.spyOn(Console.prototype, 'log');
-    orion(bareApp, { ...defaultOptions, logging: { enable: true } });
+    app.use(orion({ ...defaultOptions, logging: { enable: true } }));
 
     expect(spy).toHaveBeenCalled();
-    expect(spy.mock.calls[0].join('')).toMatch(/.*orion\smapped\sroutes.*/);
+    expect(spy.mock.calls[0].join('')).toMatch(/.*:::\smapped\sroutes.*/);
   });
 });
 
 describe('mapped paths', () => {
   it('should map paths correctly', async () => {
-    const app = orion(bareApp, { ...defaultOptions });
+    app.use(orion({ ...defaultOptions }));
 
     const res = await request(app).get('/path-1');
     const body = res.body as Record<string, unknown>;
@@ -60,7 +60,7 @@ describe('mapped paths', () => {
   });
 
   it('should skip paths with incorrect schema', async () => {
-    const app = orion(bareApp, { ...defaultOptions });
+    app.use(orion({ ...defaultOptions }));
 
     const res = await request(app).get('/lol-route');
 
@@ -70,7 +70,7 @@ describe('mapped paths', () => {
 
 describe('middlewares', () => {
   it('should correctly use middleware', async () => {
-    const app = orion(bareApp, { ...defaultOptions });
+    app.use(orion({ ...defaultOptions }));
 
     const res = await request(app).get('/mw-path-1');
     const body = res.body as Record<string, unknown>;
@@ -83,7 +83,7 @@ describe('middlewares', () => {
 
 describe('routes meta', () => {
   it('should correctly attach base path', async () => {
-    const app = orion(bareApp, { ...defaultOptions });
+    app.use(orion({ ...defaultOptions }));
 
     const res = await request(app).get('/test/path-1');
     const body = res.body as Record<string, unknown>;
@@ -93,7 +93,7 @@ describe('routes meta', () => {
   });
 
   it('should correctly use meta middlewares', async () => {
-    const app = orion(bareApp, { ...defaultOptions });
+    app.use(orion({ ...defaultOptions }));
 
     const res = await request(app).get('/test/path-2');
     const body = res.body as Record<string, unknown>;
