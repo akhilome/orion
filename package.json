@@ -1,6 +1,6 @@
 {
   "name": "@akhilome/orion",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "dist/index.js",
   "repository": "git@github.com:akhilome/orion.git",
   "author": "Kizito Akhilome <kizito@akhilo.me>",
