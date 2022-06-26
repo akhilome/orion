@@ -8,7 +8,7 @@ import { routeLogger } from './route-logger';
 import { OrionOptions } from './types';
 import { defaultOptions, validatePeerDeps } from './utils';
 
-export function orion(opts: OrionOptions = defaultOptions) {
+export function orion(opts?: OrionOptions) {
   opts = { ...defaultOptions, ...opts };
   const callSite = caller();
   const callerExt = path.extname(callSite).split('.')[1];
@@ -23,7 +23,7 @@ export function orion(opts: OrionOptions = defaultOptions) {
     cwd: path.dirname(callSite),
   });
 
-  const routes = gatherRoutes(paths);
+  const routes = gatherRoutes(paths, { base: opts.base });
 
   routeLogger(routes, { suffix, ext, ...opts.logging });
 

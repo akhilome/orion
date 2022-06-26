@@ -103,3 +103,25 @@ describe('routes meta', () => {
     expect(body.from_mw).toEqual('from meta middleware');
   });
 });
+
+describe('root base', () => {
+  it('should correctly attach root base path', async () => {
+    app.use(orion({ ...defaultOptions, base: 'r1', suffix: 'r1' }));
+
+    const res = await request(app).get('/r1');
+    const body = res.body as Record<string, unknown>;
+
+    expect(body).toBeDefined();
+    expect(body.message).toEqual('root base test root');
+  });
+
+  it('should correctly attach root base path route', async () => {
+    app.use(orion({ ...defaultOptions, base: 'r1', suffix: 'r1' }));
+
+    const res = await request(app).get('/r1/path-1');
+    const body = res.body as Record<string, unknown>;
+
+    expect(body).toBeDefined();
+    expect(body.message).toEqual('root base test');
+  });
+});

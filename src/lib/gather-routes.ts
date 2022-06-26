@@ -2,7 +2,10 @@ import cloneDeep from 'lodash/cloneDeep';
 import { Route, RouteFile } from './types';
 import { HttpMethod, InvalidRouteError } from './utils';
 
-export function gatherRoutes(paths: string[]) {
+type GatherRoutesOpts = {
+  base?: string;
+};
+export function gatherRoutes(paths: string[], opts: GatherRoutesOpts) {
   const pathsWithErrors: string[] = []; // TODO: surface this to the consumer
   const routesWithErrors: InvalidRouteError[] = []; // TODO: surface this to the consumer
 
@@ -23,10 +26,14 @@ export function gatherRoutes(paths: string[]) {
       if (errors) {
         routesWithErrors.push(...errors);
         return null;
-      } else {
-        const route = { ...r, path: normalizePath(r.path), method: normalizeMethod(r.method) };
-        return route;
       }
+
+      const route = {
+        ...r,
+        path: normalizePath(r.path, opts.base),
+        method: normalizeMethod(r.method),
+      };
+      return route;
     })
     .filter((r) => r) as Route[];
 
@@ -42,7 +49,7 @@ function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) 
   if (meta.base) {
     const basePath = meta.base;
     _routes.forEach((r) => {
-      r.path = removeDuplicateSlashes(`/${basePath}/${r.path}`);
+      r.path = removeDuplicateAndTrailingSlash(`/${basePath}/${r.path}`);
     });
   }
 
@@ -59,22 +66,32 @@ function attachRouteMeta(routes: RouteFile['routes'], meta?: RouteFile['meta']) 
   return _routes;
 }
 
-function removeDuplicateSlashes(path: string) {
-  return path.replace(/\/\/+/gi, '/');
+function removeDuplicateAndTrailingSlash(path: string) {
+  const withoutDupe = path.replace(/\/\/+/gi, '/');
+  const withoutTrailing = withoutDupe === '1' ? withoutDupe : withoutDupe.replace(/\/$/g, '');
+  return withoutTrailing;
 }
 
-function normalizePath(path: string) {
+function removeSpaces(path: string) {
+  return path.replace(/\s/gi, '');
+}
+
+function normalizePath(path: string, base?: string) {
   let normalizedPath: string = path;
 
   if (!normalizedPath) {
     normalizedPath = '/';
   }
 
-  if (!normalizedPath.startsWith('/')) {
-    normalizedPath = `/${path}`;
+  if (base) {
+    normalizedPath = `${base}/${normalizedPath}`;
   }
 
-  return removeDuplicateSlashes(normalizedPath);
+  if (!normalizedPath.startsWith('/')) {
+    normalizedPath = `/${normalizedPath}`;
+  }
+
+  return removeDuplicateAndTrailingSlash(removeSpaces(normalizedPath));
 }
 
 function normalizeMethod(method: Route['method']) {
