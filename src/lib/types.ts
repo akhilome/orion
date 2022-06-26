@@ -28,6 +28,7 @@ export interface RouteFile {
 export interface OrionOptions {
   ext?: 'js' | 'mjs' | 'ts';
   suffix?: string;
+  base?: string;
   validation?: {
     enable?: boolean;
     options?: ValidationOptions | AsyncValidationOptions;

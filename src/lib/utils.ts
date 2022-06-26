@@ -5,6 +5,7 @@ import { OrionOptions } from './types';
 
 export const defaultOptions = {
   suffix: 'route',
+  base: '',
   validation: {
     enable: true,
     options: { abortEarly: false, stripUnknown: true },
