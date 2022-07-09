@@ -1,11 +1,13 @@
-import { RequestHandler } from 'express';
+import { RequestHandler as Handler } from 'express';
 import { AsyncValidationOptions, ObjectSchema, ValidationOptions } from 'joi';
 import { HttpMethod } from './utils';
 
-export interface Route<P = unknown> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RequestHandler = Handler<any, any, any, any>;
+export interface Route {
   path: string;
   method: Uppercase<HttpMethod>;
-  handler: RequestHandler<P>;
+  handler: RequestHandler;
   validator?: {
     body?: ObjectSchema;
     query?: ObjectSchema;
