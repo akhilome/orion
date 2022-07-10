@@ -1,9 +1,21 @@
-import { RequestHandler as Handler } from 'express';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextFunction, Request, RequestHandler as Handler, Response } from 'express';
 import { AsyncValidationOptions, ObjectSchema, ValidationOptions } from 'joi';
 import { HttpMethod } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type RequestHandler = Handler<any, any, any, any>;
+interface RequestHandler<
+  P = any,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any,
+  Locals extends Record<string, any> = Record<string, any>,
+> extends Handler<P, ResBody, ReqBody, ReqQuery, Locals> {
+  (
+    req: Request<P, ResBody, ReqBody, ReqQuery, Locals>,
+    res: Response<ResBody, Locals>,
+    next: NextFunction,
+  ): void | Promise<void> | Response | Promise<Response>;
+}
 export interface Route {
   path: string;
   method: Uppercase<HttpMethod>;
