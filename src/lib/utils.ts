@@ -1,7 +1,8 @@
+import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { PackageJson } from 'type-fest';
-import { OrionOptions } from './types';
+import { OrionOptions, RequestHandler } from './types';
 
 export const defaultOptions = {
   suffix: 'route',
@@ -56,3 +57,8 @@ export class InvalidRouteError extends Error {
     super(message);
   }
 }
+
+export const handleThrownErrors =
+  (handler: RequestHandler) => (req: Request, res: Response, next: NextFunction) => {
+    return Promise.resolve(handler(req, res, next)).catch(next);
+  };

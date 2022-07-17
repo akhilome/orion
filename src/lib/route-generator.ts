@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { OrionOptions, Route } from './types';
 import { joiValidatorMW } from './joi-validator.middleware';
-import { defaultOptions } from './utils';
+import { defaultOptions, handleThrownErrors } from './utils';
 
 interface GenerateRouterOptions {
   validation?: OrionOptions['validation'];
@@ -19,7 +19,7 @@ export function generateRouter(routes: Route[], opts: GenerateRouterOptions): Ro
     }
 
     const method = r.method.toLowerCase() as Lowercase<typeof r.method>;
-    router[method](r.path, ...r.middlewares, r.handler);
+    router[method](r.path, ...r.middlewares, handleThrownErrors(r.handler));
   });
 
   return router;

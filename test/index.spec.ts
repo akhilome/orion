@@ -1,4 +1,5 @@
-import express, { Application } from 'express';
+import { ErrorResponseObject } from '@akhilome/common';
+import express, { Application, NextFunction, Request, Response } from 'express';
 import request from 'supertest';
 import { orion } from '../src';
 
@@ -123,5 +124,33 @@ describe('root base', () => {
 
     expect(body).toBeDefined();
     expect(body.message).toEqual('root base test');
+  });
+});
+
+describe('async error handler', () => {
+  it('should correctly uncaught sync errors', async () => {
+    app.use(orion({ ...defaultOptions, base: 'r1', suffix: 'r1' }));
+    app.use((err: Error, _: Request, res: Response, _n: NextFunction) => {
+      res.status(500).json(new ErrorResponseObject(err.message));
+    });
+    const res = await request(app).get('/r1/path-sync-error');
+    const body = res.body as Record<string, unknown>;
+
+    expect(body).toBeDefined();
+    expect(body.success).toEqual(false);
+    expect(body.message).toEqual('path sync error');
+  });
+
+  it('should correctly uncaught async errors', async () => {
+    app.use(orion({ ...defaultOptions, base: 'r1', suffix: 'r1' }));
+    app.use((err: Error, _: Request, res: Response, _n: NextFunction) => {
+      res.status(500).json(new ErrorResponseObject(err.message));
+    });
+    const res = await request(app).get('/r1/path-async-error');
+    const body = res.body as Record<string, unknown>;
+
+    expect(body).toBeDefined();
+    expect(body.success).toEqual(false);
+    expect(body.message).toEqual('path async error');
   });
 });

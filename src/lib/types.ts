@@ -3,7 +3,7 @@ import { NextFunction, Request, RequestHandler as Handler, Response } from 'expr
 import { AsyncValidationOptions, ObjectSchema, ValidationOptions } from 'joi';
 import { HttpMethod } from './utils';
 
-interface RequestHandler<
+export interface RequestHandler<
   P = any,
   ResBody = any,
   ReqBody = any,
@@ -16,6 +16,7 @@ interface RequestHandler<
     next: NextFunction,
   ): void | Promise<void> | Response | Promise<Response>;
 }
+
 export interface Route {
   path: string;
   method: Uppercase<HttpMethod>;
