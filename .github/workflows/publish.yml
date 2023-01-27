@@ -6,14 +6,16 @@ on:
       - master
 
 jobs:
-  prerelease:
-    if: startsWith(github.event.head_commit.message, 'prerelease:')
+  release:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, 'release(')
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: setup git config
@@ -28,88 +30,27 @@ jobs:
       - name: Build distributable
         run: yarn build
 
-      - name: Create & publish new release
-        run: np prerelease --tag next --no-collab-check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Detect release version
+        run: |
+          echo release_version="$(echo '${{ github.event.head_commit.message }}' | sed -nE 's/.*release\(([a-z]+)\).*/\1/p')" >> $GITHUB_ENV
 
-  patch:
-    runs-on: ubuntu-latest
-    if: startsWith(github.event.head_commit.message, 'patch:')
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
+      - name: Print detected version
+        run: echo "${{ env.release_version }}"
 
-      - name: setup git config
-        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
+      - name: Detect release tag
+        run: |
+          echo release_tag="$(echo '${{ github.event.head_commit.message }}' | sed -nE 's/.*tag\:([a-z]+).*/\1/p')" >> $GITHUB_ENV
 
-      - name: Install np
-        run: yarn global add @akhilome/np@latest
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build distributable
-        run: yarn build
+      - name: Print detected tag
+        run: echo "${{ env.release_tag }}"
 
       - name: Create & publish new release
-        run: np patch --no-collab-check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  minor:
-    if: startsWith(github.event.head_commit.message, 'minor:')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: setup git config
-        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
-
-      - name: Install np
-        run: yarn global add @akhilome/np@latest
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build distributable
-        run: yarn build
-
-      - name: Create & publish new release
-        run: np minor --no-collab-check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  major:
-    if: startsWith(github.event.head_commit.message, 'major:')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: setup git config
-        run: git config user.name ${{ secrets.PUBLISH_USERNAME }} && git config user.email ${{ secrets.PUBLISH_EMAIL }}
-
-      - name: Install np
-        run: yarn global add @akhilome/np@latest
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build distributable
-        run: yarn build
-
-      - name: Create & publish new release
-        run: np major --no-collab-check
+        run: |
+          if [ -n ${{ env.release_tag }} ]
+          then
+            np ${{ env.release_version }} --tag=${{ env.release_tag }} --message='chore: bump version to %s' --no-collab-check
+          else
+            np ${{ env.release_version }} --message='chore: bump version to v%s' --no-collab-check
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
