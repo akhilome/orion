@@ -8,11 +8,12 @@ export const defaultOptions = {
   suffix: 'route',
   base: '',
   validation: {
-    enable: true,
+    enabled: true,
     options: { abortEarly: false, stripUnknown: true },
+    errorStatusCode: 422,
   },
   logging: {
-    enable: true,
+    enabled: true,
   },
 } as const;
 
@@ -25,7 +26,7 @@ export function validatePeerDeps(options: OrionOptions): void {
 
     const hasJoi = Boolean(pkg.dependencies?.joi);
 
-    if (options.validation?.enable && !hasJoi) {
+    if (options.validation?.enabled && !hasJoi) {
       missingDeps.push('joi');
     }
   } catch (error) {

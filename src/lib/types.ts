@@ -21,7 +21,7 @@ export interface Route {
   path: string;
   method: Uppercase<HttpMethod>;
   handler: RequestHandler;
-  validator?: {
+  schema?: {
     body?: ObjectSchema;
     query?: ObjectSchema;
     params?: ObjectSchema;
@@ -45,10 +45,11 @@ export interface OrionOptions {
   suffix?: string;
   base?: string;
   validation?: {
-    enable?: boolean;
+    enabled?: boolean;
     options?: ValidationOptions | AsyncValidationOptions;
+    errorStatusCode?: number;
   };
   logging?: {
-    enable?: boolean;
+    enabled?: boolean;
   };
 }

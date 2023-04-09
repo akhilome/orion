@@ -8,7 +8,7 @@ beforeEach(() => {
   app = express();
 });
 
-const defaultOptions = { validation: { enable: false }, logging: { enable: false } };
+const defaultOptions = { validation: { enabled: false }, logging: { enabled: false } };
 
 describe('config', () => {
   it('should throw when validation enabled but no joi dep.', () => {
@@ -42,7 +42,7 @@ describe('config', () => {
   it('should log to console when logging enabled', () => {
     const { Console } = console;
     const spy = jest.spyOn(Console.prototype, 'log');
-    app.use(orion({ ...defaultOptions, logging: { enable: true } }));
+    app.use(orion({ ...defaultOptions, logging: { enabled: true } }));
 
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0].join('')).toMatch(/.*:::\smapped\sroutes.*/);

@@ -11,7 +11,7 @@ type RouteLoggerOptions = {
 } & OrionOptions['logging'];
 
 export function routeLogger(routes: Route[], opts: RouteLoggerOptions) {
-  if (!opts.enable) return;
+  if (!opts.enabled) return;
 
   log(`${EOL}✨ [*.${opts.suffix}.${opts.ext}] ::: mapped routes ${EOL}`);
   routes.forEach(logRoute);
