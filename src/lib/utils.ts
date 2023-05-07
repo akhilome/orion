@@ -5,7 +5,7 @@ export const defaultOptions = {
   suffix: 'route',
   base: '',
   validation: {
-    enabled: false,
+    enabled: true,
     options: { abortEarly: false, stripUnknown: true },
     errorStatusCode: 422,
   },
